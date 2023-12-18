@@ -1,20 +1,22 @@
 package com.br.maisgol.service;
 
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
+import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.br.maisgol.model.coach.Coach;
 import com.br.maisgol.model.enums.Status;
 import com.br.maisgol.repository.CoachRepository;
-
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 @Service
 public class CoachServiceImpl implements CoachService {
@@ -93,10 +95,16 @@ public class CoachServiceImpl implements CoachService {
 
     @Override
     public void uploadCoachPhoto(Long coachId, MultipartFile photoFile) throws IOException {
-        Coach coach = findById(coachId);
-        byte[] photoBytes = photoFile.getBytes();
-        coach.setPhoto(photoBytes);
-        coachRepository.save(coach);
+      Coach coach = findById(coachId);
+    byte[] photoBytes = photoFile.getBytes();
+
+        
+        BufferedImage image = ImageIO.read(new ByteArrayInputStream(photoBytes));
+        ByteArrayOutputStream jpegOutputStream = new ByteArrayOutputStream();
+        ImageIO.write(image, "jpeg", jpegOutputStream);
+        byte[] jpegBytes = jpegOutputStream.toByteArray();
+
+        coach.setPhoto(jpegBytes);
     }
     
 }
