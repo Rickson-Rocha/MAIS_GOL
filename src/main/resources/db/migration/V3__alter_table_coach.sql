@@ -1,0 +1,1 @@
+ALTER TABLE tb_coach ADD COLUMN photo_coach BLOB;
