@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import com.br.maisgol.model.group.Group;
 import com.br.maisgol.service.GroupService;
+import com.br.maisgol.service.exceptions.ConflictException;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -61,7 +62,7 @@ public class GroupController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) throws ConflictException {
         groupService.delete(id);
         return ResponseEntity.noContent().build();
     }
