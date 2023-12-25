@@ -2,8 +2,10 @@ package com.br.maisgol.model.coach;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.br.maisgol.model.enums.Status;
+import com.br.maisgol.model.schedule.Schedule;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
@@ -14,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
@@ -34,7 +37,7 @@ public class Coach implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_coach")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
 
     @NotNull
@@ -64,4 +67,6 @@ public class Coach implements Serializable {
     @Column(name = "photo_coach")
     private byte[] photo;
 
+    @OneToMany(mappedBy = "coach")
+    private List<Schedule> schedules;
 }
