@@ -4,6 +4,7 @@ CREATE TABLE tb_schedule (
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
     training_id INT,
-    FOREIGN KEY (training_id) REFERENCES tb_training(id_training)
-
+    coach_id INT, -- Adicionando uma referência direta para o Coach
+    FOREIGN KEY (training_id) REFERENCES tb_training(id_training),
+    FOREIGN KEY (coach_id) REFERENCES tb_coach(id_coach)
 );
