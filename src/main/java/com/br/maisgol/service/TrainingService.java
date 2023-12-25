@@ -1,21 +1,22 @@
 package com.br.maisgol.service;
 
-import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.List;
 
-import com.br.maisgol.model.coach.Coach;
-import com.br.maisgol.model.field.Field;
-import com.br.maisgol.model.group.Group;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+
 import com.br.maisgol.model.schedule.Schedule;
 import com.br.maisgol.model.training.Training;
+import com.br.maisgol.service.exceptions.ConflictException;
+import com.br.maisgol.service.exceptions.ObjectNotFoundException;
 
 public interface TrainingService {
-    boolean isCoachAvailable(Coach coach, List<Schedule> selectedSchedules);
+   Training createTraining(Long groupId, Long coachId, List<Schedule> schedules)throws ConflictException;
+   Training getTrainingById(Long trainingId) throws ObjectNotFoundException;
+   Training updateTraining(Long trainingId, Training updatedTraining) throws NotFoundException, ConflictException;
 
-    boolean isFieldAvailable(Field field, List<Schedule> selectedSchedules);
-
-    boolean isGroupAvailable(Group group, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime);
-
-    Training createTraining(Group group, Coach coach, Field field, List<Schedule> selectedSchedules);
+    // Método para deletar um treinamento pelo ID
+    void deleteTraining(Long trainingId) throws NotFoundException;
+    
+    // Método para obter todos os treinamentos
+    List<Training> getAllTrainings();
 }

@@ -6,20 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-
 import com.br.maisgol.model.enums.Status;
 import com.br.maisgol.model.group.Group;
 import com.br.maisgol.repository.GroupRepository;
+import com.br.maisgol.service.exceptions.ConflictException;
+import com.br.maisgol.service.exceptions.ObjectNotFoundException;
 
 @Service
 public class GroupServiceImpl implements GroupService {
     @Autowired
     private GroupRepository groupRepository;
+
+
     @Override
     public Group findById(Long id) {
        Optional<Group> group = this.groupRepository.findById(id);
-        return group.orElseThrow(()-> new RuntimeException("Coach not found"));
+        return group.orElseThrow(()-> new ObjectNotFoundException("Coach not found"));
     }
 
     @Override
@@ -29,9 +31,11 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group createGroup(Group group) {
-       group.setId(null);
-       Group newGroup = groupRepository.save(group);
-       return newGroup;
+
+        group.setId(null); // Certifique-se de que o ID seja nulo para criar um novo grupo
+
+        Group newGroup = groupRepository.save(group);
+        return newGroup;
     }
 
     @Override
@@ -43,11 +47,11 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(Long id)throws ConflictException {
         Group group = findById(id);
     
         if (group.getStatus() == Status.INACTIVE) {
-            throw new RuntimeException("Group is already inactive.");
+            throw new ConflictException("Group is already inactive.");
         }
         
         group.setStatus(Status.INACTIVE);

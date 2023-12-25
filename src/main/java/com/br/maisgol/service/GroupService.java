@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.br.maisgol.model.enums.Status;
 import com.br.maisgol.model.group.Group;
+import com.br.maisgol.service.exceptions.ConflictException;
 
 public interface GroupService {
     Group findById(Long id);
@@ -16,7 +17,7 @@ public interface GroupService {
 
     Group updateGroup(Group group);
 
-    void delete(Long id);
+    void delete(Long id)throws ConflictException;
 
     Page<Group> findActiveGroups(Pageable pageable);
 

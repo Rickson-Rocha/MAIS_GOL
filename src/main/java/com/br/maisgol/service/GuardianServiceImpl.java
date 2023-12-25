@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.br.maisgol.model.guardian.Guardian;
 import com.br.maisgol.repository.GuardianRepository;
+import com.br.maisgol.service.exceptions.ObjectNotFoundException;
 
 @Service
 public class GuardianServiceImpl implements  GuardianService {
@@ -17,7 +18,7 @@ public class GuardianServiceImpl implements  GuardianService {
     @Override
     public Guardian findById(Long id) {
         Optional<Guardian> coach = this.guardianRepository.findById(id);
-        return coach.orElseThrow(()-> new RuntimeException("Guardian not found"));
+        return coach.orElseThrow(()-> new ObjectNotFoundException("Guardian not found"));
     }
 
     @Override

@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.br.maisgol.model.coach.Coach;
 import com.br.maisgol.model.enums.Status;
 import com.br.maisgol.repository.CoachRepository;
+import com.br.maisgol.service.exceptions.ObjectNotFoundException;
+
 import jakarta.transaction.Transactional;
 @Service
 public class CoachServiceImpl implements CoachService {
@@ -27,7 +29,7 @@ public class CoachServiceImpl implements CoachService {
     @Override
     public Coach findById(Long id) {
         Optional<Coach> coach = this.coachRepository.findById(id);
-        return coach.orElseThrow(()-> new RuntimeException("Coach not found"));
+        return coach.orElseThrow(()-> new ObjectNotFoundException("Coach not found"));
     }
 
     @Override

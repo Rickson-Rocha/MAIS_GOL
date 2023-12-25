@@ -1,117 +1,102 @@
 package com.br.maisgol.service;
 
-import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.br.maisgol.model.coach.Coach;
-import com.br.maisgol.model.field.Field;
 import com.br.maisgol.model.group.Group;
 import com.br.maisgol.model.schedule.Schedule;
 import com.br.maisgol.model.training.Training;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
+import com.br.maisgol.repository.CoachRepository;
+import com.br.maisgol.repository.GroupRepository;
+import com.br.maisgol.repository.TrainingRepository;
+import com.br.maisgol.service.exceptions.ConflictException;
+import com.br.maisgol.service.exceptions.ObjectNotFoundException;
 
 @Service
-public class TrainingServiceImpl implements TrainingService {
-    @PersistenceContext
-    private EntityManager entityManager;
+public class TrainingServiceImpl implements TrainingService{
+    @Autowired
+    private TrainingRepository trRepository;
+
+    @Autowired
+    private GroupRepository groupRepository;
+
+    @Autowired
+    private CoachRepository coachRepository;
 
     @Override
-    public Training createTraining(Group group, Coach coach, Field field, List<Schedule> selectedSchedules) {
-        for (Schedule newSchedule : selectedSchedules) {
-            if (!isGroupAvailable(group, newSchedule.getDayOfWeek(), newSchedule.getStartTime(), newSchedule.getEndTime())) {
-                throw new RuntimeException("A turma selecionada não está disponível para um novo treino.");
+    public Training createTraining(Long groupId, Long coachId, List<Schedule> schedules)throws ConflictException {
+        Group group = groupRepository.findById(groupId)
+        .orElseThrow(() -> new ObjectNotFoundException("Group not found"));
+
+        Coach coach = coachRepository.findById(coachId)
+                .orElseThrow(() -> new ObjectNotFoundException("Coach not found"));
+
+        if (hasCoachScheduleConflict(coach, schedules)) {
+        throw new ConflictException("There is a schedule conflict for the coach");
+        }
+
+        Training training = new Training();
+        training.setGroup(group);
+        training.setCoach(coach);
+        for (Schedule schedule : schedules) {
+        schedule.setTraining(training);
+        }
+        training.setSchedules(schedules);
+
+        return trRepository.save(training);
+    }
+
+    private boolean hasCoachScheduleConflict(Coach coach, List<Schedule> schedules) {
+        List<Training> coachTrainings = trRepository.findByCoach(coach);
+
+        for (Training coachTraining : coachTrainings) {
+            for (Schedule existingSchedule : coachTraining.getSchedules()) {
+                for (Schedule newSchedule : schedules) {
+                    if (newSchedule.getDayOfWeek().equals(existingSchedule.getDayOfWeek())) {
+                        if (isTimeConflict(newSchedule, existingSchedule)) {
+                            return true;
+                        }
+                    }
+                }
             }
         }
-        if (!isFieldAvailable(field, selectedSchedules)) {
-            throw new RuntimeException("O campo selecionado não está disponível para este horário e dias da semana.");
-        }
+        return false;
+    }
 
-        if (!isCoachAvailable(coach, selectedSchedules)) {
-            throw new RuntimeException("O professor selecionado não está disponível para este horário e dias da semana.");
-        }
-
-        Training training = new Training(field, coach, group);
-
-        // Define a lista de schedules para o treinamento
-        training.setSchedules(selectedSchedules);
-
-        // Persiste o treinamento e os schedules associados
-        entityManager.persist(training);
-
-        return training;
+    private boolean isTimeConflict(Schedule newSchedule, Schedule existingSchedule) {
+        return newSchedule.getStartTime().isBefore(existingSchedule.getEndTime()) &&
+                newSchedule.getEndTime().isAfter(existingSchedule.getStartTime());
     }
 
     @Override
-    public boolean isCoachAvailable(Coach coach, List<Schedule> selectedSchedules) {
-        String query = "SELECT COUNT(*) FROM Training t " +
-                      "WHERE t.coach.id = :coachId " +
-                      "AND (";
-        
-        StringBuilder conditions = new StringBuilder();
-        for (Schedule schedule : selectedSchedules) {
-            conditions.append("OR (t.schedule.dayOfWeek = :dayOfWeek")
-                      .append(" AND t.schedule.startTime BETWEEN :startTime AND :endTime ")
-                      .append(" OR t.schedule.endTime BETWEEN :startTime AND :endTime) ");
-        }
-        query += conditions.substring(2) + ")";
-
-        Query q = entityManager.createQuery(query);
-        q.setParameter("coachId", coach.getId());
-        for (Schedule schedule : selectedSchedules) {
-            q.setParameter("dayOfWeek", schedule.getDayOfWeek());
-            q.setParameter("startTime", schedule.getStartTime());
-            q.setParameter("endTime", schedule.getEndTime());
-        }
-
-        Long count = (Long) q.getSingleResult();
-        return count == 0;
+    public Training getTrainingById(Long trainingId) throws ObjectNotFoundException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTrainingById'");
     }
 
     @Override
-    public boolean isFieldAvailable(Field field, List<Schedule> selectedSchedules) {
-        for (Schedule schedule : selectedSchedules) {
-            String query = "SELECT COUNT(*) FROM Training t " +
-                          "WHERE t.field.id = :fieldId " +
-                          "AND t.schedule.dayOfWeek = :dayOfWeek " +
-                          "AND ((t.schedule.startTime BETWEEN :startTime AND :endTime) " +
-                          "OR (t.schedule.endTime BETWEEN :startTime AND :endTime))";
-    
-            Query q = entityManager.createQuery(query);
-            q.setParameter("fieldId", field.getId());
-            q.setParameter("dayOfWeek", schedule.getDayOfWeek());
-            q.setParameter("startTime", schedule.getStartTime());
-            q.setParameter("endTime", schedule.getEndTime());
-    
-            Long count = (Long) q.getSingleResult();
-            if (count > 0) {
-                return false; // Field unavailable for at least one schedule
-            }
-        }
-        return true; // Field available for all selected schedules
+    public Training updateTraining(Long trainingId, Training updatedTraining)
+            throws NotFoundException, ConflictException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updateTraining'");
     }
 
     @Override
-    public boolean isGroupAvailable(Group group, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) {
-       String query = "SELECT COUNT(*) FROM Training t " +
-                      "WHERE t.group.id = :groupId " +
-                      "AND t.schedule.dayOfWeek = :dayOfWeek " +
-                      "AND ((t.schedule.startTime BETWEEN :startTime AND :endTime) " +
-                      "OR (t.schedule.endTime BETWEEN :startTime AND :endTime))";
+    public void deleteTraining(Long trainingId) throws NotFoundException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteTraining'");
+    }
 
-        Query q = entityManager.createQuery(query);
-        q.setParameter("groupId", group.getId());
-        q.setParameter("dayOfWeek", dayOfWeek);
-        q.setParameter("startTime", startTime);
-        q.setParameter("endTime", endTime);
-
-        Long count = (Long) q.getSingleResult();
-        return count == 0;
+    @Override
+    public List<Training> getAllTrainings() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAllTrainings'");
     }
     
-}
+    
+    }
+
