@@ -69,7 +69,7 @@ public class GroupController {
 
     @GetMapping("/active")
     public ResponseEntity<Page<Group>> getActiveGroup(
-            @PageableDefault(size = 10) Pageable pageable // Define o tamanho da página como 10 por padrão
+            @PageableDefault(size = 10) Pageable pageable 
     ) {
         Page<Group> activeGroupPage = groupService.findActiveGroups(pageable);
         return ResponseEntity.ok(activeGroupPage);
@@ -77,7 +77,7 @@ public class GroupController {
 
     @GetMapping("/inactive")
     public ResponseEntity<Page<Group>> getInactiveGroup(
-            @PageableDefault(size = 10) Pageable pageable // Define o tamanho da página como 10 por padrão
+            @PageableDefault(size = 10) Pageable pageable 
     ) {
         Page<Group> inactiveGroupPage = groupService.findActiveGroups(pageable);
         return ResponseEntity.ok(inactiveGroupPage);
@@ -85,7 +85,7 @@ public class GroupController {
 
     @GetMapping("/vacation")
     public ResponseEntity<Page<Group>> getVactionGroup(
-            @PageableDefault(size = 10) Pageable pageable // Define o tamanho da página como 10 por padrão
+            @PageableDefault(size = 10) Pageable pageable 
 ) {
         Page<Group> vacationGroupPage = groupService.findActiveGroups(pageable);
         return ResponseEntity.ok(vacationGroupPage);
