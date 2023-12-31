@@ -40,23 +40,21 @@ public class AthletesServiceImpl implements AthletesService {
     public Athletes createAthlete(Athletes athlete) {
         athlete.setId(null);
     
-        // Buscar o guardião (guardian) pelo CPF
         Guardian guardian = guardianService.findByCpf(athlete.getGuardian().getCpf());
         if (guardian == null) {
             throw new ObjectNotFoundException("Guardian not found for CPF: " + athlete.getGuardian().getCpf());
         }
     
-        // Verificar se o grupo com o ID fornecido existe
         Group group = groupService.findById(athlete.getGroup().getId());
         if (group == null) {
             throw new ObjectNotFoundException("Group not found with ID: " + athlete.getGroup().getId());
         }
     
-        // Associar o guardião e o grupo ao atleta
+
         athlete.setGuardian(guardian);
         athlete.setGroup(group);
     
-        // Salvar o novo atleta
+    
         return athletesRepository.save(athlete);
     }
     

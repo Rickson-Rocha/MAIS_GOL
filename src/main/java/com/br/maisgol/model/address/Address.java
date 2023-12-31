@@ -1,6 +1,7 @@
 package com.br.maisgol.model.address;
 
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -60,9 +61,5 @@ public class Address {
     @Column(name = "floor_address")
     private String floor;
 
-    
-    // private Guardian guardian;
-
-    // private Coach coach;
 
 }

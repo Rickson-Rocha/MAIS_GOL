@@ -23,7 +23,7 @@ public interface GroupService {
 
     Page<Group> findInactiveGroups(Pageable pageable);
 
-    Page<Group> findVacationGuardins(Pageable pageable);
+    Page<Group> findVacationGroups(Pageable pageable);
 
     Page<Group> findGroupsByCriteria(String name, Status status,Pageable pageable);
 

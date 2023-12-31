@@ -2,7 +2,6 @@ package com.br.maisgol.model.guardian;
 
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +28,6 @@ public class Guardian {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_guardian")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
 
     @NotNull

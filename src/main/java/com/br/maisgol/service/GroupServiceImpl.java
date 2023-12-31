@@ -69,7 +69,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Page<Group> findVacationGuardins(Pageable pageable) {
+    public Page<Group> findVacationGroups(Pageable pageable) {
         return groupRepository.findByStatus(Status.VACATION,  pageable);
     }
 

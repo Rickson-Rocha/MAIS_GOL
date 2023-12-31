@@ -79,7 +79,7 @@ public class GroupController {
     public ResponseEntity<Page<Group>> getInactiveGroup(
             @PageableDefault(size = 10) Pageable pageable 
     ) {
-        Page<Group> inactiveGroupPage = groupService.findActiveGroups(pageable);
+        Page<Group> inactiveGroupPage = groupService.findInactiveGroups(pageable);
         return ResponseEntity.ok(inactiveGroupPage);
     }
 
@@ -87,7 +87,7 @@ public class GroupController {
     public ResponseEntity<Page<Group>> getVactionGroup(
             @PageableDefault(size = 10) Pageable pageable 
 ) {
-        Page<Group> vacationGroupPage = groupService.findActiveGroups(pageable);
+        Page<Group> vacationGroupPage = groupService.findVacationGroups(pageable);
         return ResponseEntity.ok(vacationGroupPage);
     }
 

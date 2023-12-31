@@ -1,11 +1,14 @@
 package com.br.maisgol.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.br.maisgol.DTO.ScheduleDTO;
+import com.br.maisgol.DTO.TrainingInfoDTO;
 import com.br.maisgol.model.coach.Coach;
 import com.br.maisgol.model.group.Group;
 import com.br.maisgol.model.schedule.Schedule;
@@ -95,6 +98,35 @@ public class TrainingServiceImpl implements TrainingService{
     public List<Training> getAllTrainings() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getAllTrainings'");
+    }
+
+    @Override
+    public List<TrainingInfoDTO> getTrainingsByCoachCPF(String coachCPF) throws ObjectNotFoundException {
+      Coach coach = coachRepository.findByCpf(coachCPF);
+    if (coach == null) {
+        throw new ObjectNotFoundException("Professor não encontrado para o CPF fornecido: " + coachCPF);
+    }
+
+    List<Training> trainings = trRepository.findByCoach(coach);
+
+    // Mapeia os treinamentos para TrainingInfoDTO
+    List<TrainingInfoDTO> trainingInfoList = new ArrayList<>();
+    for (Training training : trainings) {
+        String groupName = training.getGroup().getName();
+        List<ScheduleDTO> scheduleDTOs = new ArrayList<>();
+        for (Schedule schedule : training.getSchedules()) {
+            String dayOfWeek = schedule.getDayOfWeek().toString(); // Converte DayOfWeek para String
+            String startTime = schedule.getStartTime().toString(); // Converte LocalTime para String
+            String endTime = schedule.getEndTime().toString(); // Converte LocalTime para String
+    
+            ScheduleDTO scheduleDTO = new ScheduleDTO(dayOfWeek, startTime, endTime);
+            scheduleDTOs.add(scheduleDTO);
+        }
+        TrainingInfoDTO trainingInfo = new TrainingInfoDTO(groupName, scheduleDTOs);
+        trainingInfoList.add(trainingInfo);
+    }
+
+    return trainingInfoList;
     }
     
     

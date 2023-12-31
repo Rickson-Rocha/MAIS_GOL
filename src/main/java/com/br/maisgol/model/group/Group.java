@@ -4,7 +4,6 @@ import java.util.List;
 import com.br.maisgol.model.athletes.Athletes;
 import com.br.maisgol.model.enums.Status;
 import com.br.maisgol.model.training.Training;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,7 +32,6 @@ public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_group")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
 
     @NotNull

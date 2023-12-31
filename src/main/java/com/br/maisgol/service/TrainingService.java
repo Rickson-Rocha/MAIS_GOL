@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 
+import com.br.maisgol.DTO.TrainingInfoDTO;
 import com.br.maisgol.model.schedule.Schedule;
 import com.br.maisgol.model.training.Training;
 import com.br.maisgol.service.exceptions.ConflictException;
@@ -19,4 +20,6 @@ public interface TrainingService {
     
     // Método para obter todos os treinamentos
     List<Training> getAllTrainings();
+
+    List<TrainingInfoDTO> getTrainingsByCoachCPF(String coachCPF) throws ObjectNotFoundException;
 }

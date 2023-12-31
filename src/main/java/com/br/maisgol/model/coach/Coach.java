@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.br.maisgol.model.enums.Status;
 import com.br.maisgol.model.schedule.Schedule;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,7 +37,6 @@ public class Coach implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_coach")
-     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
 
     @NotNull
