@@ -67,7 +67,7 @@ public class AthletesServiceImpl implements AthletesService {
         boolean doesGroupExist = groupService.doesGroupExistByName(groupName); // verifca se o nome do grupo existe
         
         if (!doesGroupExist) {
-            throw new IllegalArgumentException("Grou´p not found ! .");
+            throw new IllegalArgumentException("Group not found ! .");
         }
        newAthelete.setCpf(athletes.getCpf());
        newAthelete.setStatus(athletes.getStatus());
