@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import com.br.maisgol.model.enums.Status;
 import com.br.maisgol.model.group.Group;
 import com.br.maisgol.model.guardian.Guardian;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,6 +34,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
+@JsonIgnoreProperties({"group"})
 public class Athletes implements Serializable{
 
 

@@ -4,6 +4,8 @@ import java.util.List;
 import com.br.maisgol.model.athletes.Athletes;
 import com.br.maisgol.model.enums.Status;
 import com.br.maisgol.model.training.Training;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,9 +48,15 @@ public class Group {
     @Enumerated(EnumType.STRING)
     private Status  status;
 
+
+    @JsonIgnore
     @OneToMany(mappedBy = "group")
     private List<Athletes> athletes;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "group")
     private List<Training> training;
+
+
+   
 }
