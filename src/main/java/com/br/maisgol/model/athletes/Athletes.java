@@ -34,7 +34,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-@JsonIgnoreProperties({"group"})
 public class Athletes implements Serializable{
 
 
@@ -77,6 +76,7 @@ public class Athletes implements Serializable{
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", referencedColumnName = "id_group")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // Ignorar propriedades específicas do Hibernate Proxy
     private Group group;
 
 }

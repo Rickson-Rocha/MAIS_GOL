@@ -16,12 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.br.maisgol.model.athletes.Athletes;
-import com.br.maisgol.model.coach.Coach;
 import com.br.maisgol.service.AthletesService;
 import com.br.maisgol.service.exceptions.ObjectNotFoundException;
-
-import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("athlete")
