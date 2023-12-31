@@ -10,5 +10,5 @@ import com.br.maisgol.model.training.Training;
 public interface TrainingRepository extends JpaRepository<Training,Long> {
 
     List<Training> findByCoach(Coach coach);
-    
+    List<Training> findByCoachId(Long coachId);
 }

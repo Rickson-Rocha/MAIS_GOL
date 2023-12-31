@@ -21,5 +21,8 @@ public interface TrainingService {
     // Método para obter todos os treinamentos
     List<Training> getAllTrainings();
 
+    //List<TrainingInfoDTO> getTrainingsByCoachCPF(String coachCPF) throws ObjectNotFoundException;
+    List<Training> getTrainingsByCoachId(Long coachId);
+
     List<TrainingInfoDTO> getTrainingsByCoachCPF(String coachCPF) throws ObjectNotFoundException;
 }

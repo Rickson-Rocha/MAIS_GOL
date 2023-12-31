@@ -102,33 +102,41 @@ public class TrainingServiceImpl implements TrainingService{
 
     @Override
     public List<TrainingInfoDTO> getTrainingsByCoachCPF(String coachCPF) throws ObjectNotFoundException {
-      Coach coach = coachRepository.findByCpf(coachCPF);
-    if (coach == null) {
-        throw new ObjectNotFoundException("Professor não encontrado para o CPF fornecido: " + coachCPF);
-    }
-
-    List<Training> trainings = trRepository.findByCoach(coach);
-
-    // Mapeia os treinamentos para TrainingInfoDTO
-    List<TrainingInfoDTO> trainingInfoList = new ArrayList<>();
-    for (Training training : trainings) {
-        String groupName = training.getGroup().getName();
-        List<ScheduleDTO> scheduleDTOs = new ArrayList<>();
-        for (Schedule schedule : training.getSchedules()) {
-            String dayOfWeek = schedule.getDayOfWeek().toString(); // Converte DayOfWeek para String
-            String startTime = schedule.getStartTime().toString(); // Converte LocalTime para String
-            String endTime = schedule.getEndTime().toString(); // Converte LocalTime para String
-    
-            ScheduleDTO scheduleDTO = new ScheduleDTO(dayOfWeek, startTime, endTime);
-            scheduleDTOs.add(scheduleDTO);
+        Coach coach = coachRepository.findByCpf(coachCPF);
+        if (coach == null) {
+            throw new ObjectNotFoundException("Professor não encontrado para o CPF fornecido: " + coachCPF);
         }
-        TrainingInfoDTO trainingInfo = new TrainingInfoDTO(groupName, scheduleDTOs);
-        trainingInfoList.add(trainingInfo);
+
+        List<Training> trainings = trRepository.findByCoach(coach);
+        return mapTrainingsToDTO(trainings); // Método para mapear Training para TrainingDTO
     }
 
-    return trainingInfoList;
+    private List<ScheduleDTO> mapSchedulesToDTO(List<Schedule> schedules) {
+        List<ScheduleDTO> scheduleDTOs = new ArrayList<>();
+        for (Schedule schedule : schedules) {
+            ScheduleDTO dto = new ScheduleDTO(null, null, null);
+            dto.setDayOfWeek(schedule.getDayOfWeek());
+            dto.setStartTime(schedule.getStartTime());
+            dto.setEndTime(schedule.getEndTime());
+            scheduleDTOs.add(dto);
+        }
+        return scheduleDTOs;
     }
-    
-    
+    private List<TrainingInfoDTO> mapTrainingsToDTO(List<Training> trainings) {
+        List<TrainingInfoDTO> trainingDTOs = new ArrayList<>();
+        for (Training training : trainings) {
+            TrainingInfoDTO dto = new TrainingInfoDTO();
+            dto.setGroupName(training.getGroup().getName());
+            dto.setSchedules(mapSchedulesToDTO(training.getSchedules()));
+            trainingDTOs.add(dto);
+        }
+        return trainingDTOs;
     }
+
+    @Override
+    public List<Training> getTrainingsByCoachId(Long coachId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTrainingsByCoachId'");
+    }
+}
 

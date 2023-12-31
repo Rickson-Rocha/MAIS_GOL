@@ -15,4 +15,7 @@ public class TrainingInfoDTO {
         this.groupName = groupName;
         this.schedules = schedules;
     }
+
+    public TrainingInfoDTO() {
+    }
 }
