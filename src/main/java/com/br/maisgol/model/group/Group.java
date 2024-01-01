@@ -5,7 +5,7 @@ import com.br.maisgol.model.athletes.Athletes;
 import com.br.maisgol.model.enums.Status;
 import com.br.maisgol.model.training.Training;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

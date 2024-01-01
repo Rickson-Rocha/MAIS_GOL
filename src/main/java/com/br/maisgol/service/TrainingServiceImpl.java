@@ -83,15 +83,30 @@ public class TrainingServiceImpl implements TrainingService{
 
     @Override
     public Training updateTraining(Long trainingId, Training updatedTraining)
-            throws NotFoundException, ConflictException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateTraining'");
+            throws ObjectNotFoundException, ConflictException {
+            Training existingTraining = trRepository.findById(trainingId)
+                .orElseThrow(() -> new ObjectNotFoundException("Training not found with ID: " + trainingId));
+
+            if (hasCoachScheduleConflict(updatedTraining.getCoach(), updatedTraining.getSchedules())) {
+                throw new ConflictException("Schedule conflict found with the new coach");
+            }
+    
+            // Atualize o professor do treino se não houver conflito de horário
+            existingTraining.setCoach(updatedTraining.getCoach());
+            
+            return trRepository.save(existingTraining);
     }
 
     @Override
     public void deleteTraining(Long trainingId) throws NotFoundException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteTraining'");
+        // Training training = findById(id);
+    
+        // if (group.getStatus() == Status.INACTIVE) {
+        //     throw new ConflictException("Group is already inactive.");
+        // }
+        
+        // group.setStatus(Status.INACTIVE);
+        // updateTraining(group);
     }
 
     @Override

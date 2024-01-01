@@ -13,7 +13,7 @@ import com.br.maisgol.service.exceptions.ObjectNotFoundException;
 public interface TrainingService {
    Training createTraining(Long groupId, Long coachId, List<Schedule> schedules)throws ConflictException;
    Training getTrainingById(Long trainingId) throws ObjectNotFoundException;
-   Training updateTraining(Long trainingId, Training updatedTraining) throws NotFoundException, ConflictException;
+   Training updateTraining(Long trainingId, Training updatedTraining) throws ObjectNotFoundException, ConflictException;
 
     // Método para deletar um treinamento pelo ID
     void deleteTraining(Long trainingId) throws NotFoundException;

@@ -79,4 +79,5 @@ public class Athletes implements Serializable{
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // Ignorar propriedades específicas do Hibernate Proxy
     private Group group;
 
+
 }
